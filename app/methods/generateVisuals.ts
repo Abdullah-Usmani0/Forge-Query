@@ -1,10 +1,11 @@
 //Purpose: a GPT-4 agent that uses the generatedDataSources and the userPrompt to generate 3 visuals (KPIs) based on the JSON schema provided.
 import querySchema from "./querySchema";
-const visualsSchema = querySchema.visualization;
+import agentConfig from "./agentConfig";
+
+const jsonSchema = querySchema.visualization;
+const systemPrompt = agentConfig.visualizationAgent.agentPrompt;
 
 const generateVisuals = async (generatedDataSources: any, userPrompt: any) => {
-
-    const systemPrompt = `As a JSON API, your task is to generate an array of visuals using the provided JSON schema and generated data sources. Your response should be in valid JSON format. Do not include any comments or explanations in your response. Please ensure that the generated datasources adhere to the specifications of the JSON schema and include all necessary fields as described in the model description.`;
 
     //logic to call gpt-4 api and general visuals
     let generatedVisuals: any = [];
@@ -16,7 +17,9 @@ const generateVisuals = async (generatedDataSources: any, userPrompt: any) => {
         },
         body: JSON.stringify({
             "model": "gpt-4",
-            "messages": [{ "role": "system", "content": systemPrompt }, { role: 'user', content: userPrompt }]
+            "messages": [
+                { role: "system", content: systemPrompt },
+                { role: 'user', content: `JSON Schema:\n\n${jsonSchema}\n\n$Generated Datasources:\n\n${JSON.stringify(generatedDataSources)}\n\nUser Prompt: ${userPrompt}` }]
         })
     });
 

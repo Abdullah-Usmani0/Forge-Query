@@ -9,6 +9,7 @@ export const config = {
 export async function POST(request: Request) {
   //build the data using the request body 
   const res = await request.json();
+  console.log('body: ', res)
   const userPrompt: string = res.userPrompt;
   const userId: string = res.userId;
   const userEmail: string = res.userEmail;

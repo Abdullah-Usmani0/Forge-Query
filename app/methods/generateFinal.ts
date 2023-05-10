@@ -10,7 +10,7 @@ const generateFinal = async (generatedDatasources: any, generatedVisuals: any, g
         "data_source": generatedDatasources,
         "visualization": generatedVisuals 
     }
-
+    console.log('finalJSON: ', finalJSON)
     //return finalJSON object
     return finalJSON;
 

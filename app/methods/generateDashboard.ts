@@ -1,10 +1,12 @@
 //Purpose: a GPT-4 to generate the dashboard JSON object based on the JSON schema provided. Uses the generated visuals to populate the dashboard.
 import querySchema from "./querySchema";
-const dashboardSchema = querySchema.dashboard
+import agentConfig from "./agentConfig";
+
+const jsonSchema = querySchema.dashboard
+const systemPrompt = agentConfig.dashboardAgent.agentPrompt;
 
 const generateDashboards = async (generatedVisuals: any, userPrompt: any) => {
-
-    const systemPrompt = `As a JSON API, your task is to generate a dashboard using the provided JSON schema:\n\n ${dashboardSchema}\n\n and visuals:\n\n ${JSON.stringify(generatedVisuals)}.\n\nYour response should be in valid JSON format. Do not include any comments or explanations in your response. Please ensure that the generated datasources adhere to the specifications of the JSON schema and include all necessary fields as described in the model description.`
+    
     //logic to generate dashboard using gpt-4 api
     let dashboard: any = {}
 
@@ -16,7 +18,9 @@ const generateDashboards = async (generatedVisuals: any, userPrompt: any) => {
         },
         body: JSON.stringify({
             "model": "gpt-4",
-            "messages": [{ "role": "system", "content": systemPrompt }, { role: 'user', content: userPrompt }]
+            "messages": [
+            { role: "system", content: systemPrompt }, 
+            { role: 'user', content: `JSON Schema:\n\n${jsonSchema}\n\n$Generated Visuals:\n\n${JSON.stringify(generatedVisuals)}\n\nUser Prompt: ${userPrompt}` }]
         })
     });
     //parse gpt-4 response as JSON

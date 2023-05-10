@@ -1,0 +1,140 @@
+{
+    "dashboard": {
+        "dashboard": {
+            "name": "Monthly Sales per Customer",
+            "visualization_ids": [
+                {
+                    "dashboard_id": 1,
+                    "visualization_id": 1,
+                    "position_x": 0,
+                    "position_y": 0,
+                    "width": 12,
+                    "height": 6
+                }
+            ],
+            "layout": "grid",
+            "allowed_user_ids": [],
+            "allowed_group_ids": []
+        }
+    },
+    "data_source": {
+        "data_sources": [
+            {
+                "name": "sales_per_customer",
+                "connection_type": "odoo",
+                "current_odoo_database": true,
+                "table_ids": [
+                    {
+                        "data_source_id": 1,
+                        "name": "sale.order",
+                        "description": "This model stores information about sales orders and the individual lines within those orders. It's key for sales analysis.",
+                        "field_ids": [
+                            {
+                                "table_id": 1,
+                                "name": "name",
+                                "field_type": "string",
+                                "is_dimension": true,
+                                "is_measure": false
+                            },
+                            {
+                                "table_id": 1,
+                                "name": "date_order",
+                                "field_type": "date",
+                                "is_dimension": true,
+                                "is_measure": false
+                            },
+                            {
+                                "table_id": 1,
+                                "name": "amount_total",
+                                "field_type": "float",
+                                "is_dimension": false,
+                                "is_measure": true
+                            },
+                            {
+                                "table_id": 1,
+                                "name": "partner_id",
+                                "field_type": "integer",
+                                "is_dimension": true,
+                                "is_measure": false
+                            }
+                        ]
+                    },
+                    {
+                        "data_source_id": 1,
+                        "name": "res.partner",
+                        "description": "This is the model used to store partners, customers, and suppliers. It contains information like the partner's name, contact information, and customer/supplier status.",
+                        "field_ids": [
+                            {
+                                "table_id": 2,
+                                "name": "name",
+                                "field_type": "string",
+                                "is_dimension": true,
+                                "is_measure": false
+                            },
+                            {
+                                "table_id": 2,
+                                "name": "customer_rank",
+                                "field_type": "integer",
+                                "is_dimension": true,
+                                "is_measure": false
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "visualization": {
+        "visualization": [
+            {
+                "name": "sales_per_customer_monthly",
+                "description": "Sales per customer for the current month",
+                "data_source_id": 1,
+                "table_id": 1,
+                "table_filter": "date_order >= '{{now().strftime('%Y-%m-01')}}' AND date_order < '{{(now() + relativedelta(months=1)).strftime('%Y-%m-01')}}'",
+                "join_ids": [
+                    {
+                        "name": "join_sale_order_res_partner",
+                        "visualization_id": 1,
+                        "source_table_id": 1,
+                        "destination_table_id": 2,
+                        "source_field_id": 4,
+                        "source_field_id_relation": "=",
+                        "destination_field_id": 1,
+                        "destination_field_id_relation": "=",
+                        "join_type": "inner"
+                    }
+                ],
+                "field_ids": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "query_type": "sql",
+                "query": "SELECT rp.name AS customer_name, SUM(so.amount_total) AS total_sales FROM sale_order AS so INNER JOIN res_partner AS rp ON so.partner_id = rp.id WHERE so.date_order >= '{{now().strftime('%Y-%m-01')}}' AND so.date_order < '{{(now() + relativedelta(months=1)).strftime('%Y-%m-01')}}' GROUP BY rp.name ORDER BY total_sales DESC",
+                "chart_type": "bar",
+                "x_axis_field_id": 5,
+                "y_axis_field_id": 6,
+                "filter_ids": [],
+                "metric_ids": [
+                    {
+                        "visualization_id": 1,
+                        "aggregate_function": "sum",
+                        "field_id": 3
+                    }
+                ],
+                "group_by_ids": [
+                    5
+                ],
+                "sort_by_ids": [
+                    6
+                ],
+                "result_limit": null,
+                "result_offset": null
+            }
+        ]
+    }
+}
