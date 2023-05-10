@@ -6,9 +6,9 @@ const generateFinal = async (generatedDatasources: any, generatedVisuals: any, g
 
     //combine all three objects into one JSON object
     finalJSON = {
+        "dashboard": generatedDashboard,
         "data_source": generatedDatasources,
-        "visualization": generatedVisuals,
-        "dashboard": generatedDashboard
+        "visualization": generatedVisuals 
     }
 
     //return finalJSON object

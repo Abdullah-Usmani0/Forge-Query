@@ -3,11 +3,11 @@ import querySchema from "./querySchema";
 const visualsSchema = querySchema.visualization;
 
 const generateVisuals = async (generatedDataSources: any, userPrompt: any) => {
-    
-    const systemPrompt = `As a JSON API, your task is to generate an array of visuals using the provided JSON schema: ${JSON.stringify(visualsSchema)} \n\n generated data sources: ${JSON.stringify(generatedDataSources)}. \n\nYour response should be in valid JSON format. Do not include any comments or explanations in your response. Please ensure that the generated datasources adhere to the specifications of the JSON schema and include all necessary fields as described in the model description.`;
+
+    const systemPrompt = `As a JSON API, your task is to generate an array of visuals using the provided JSON schema and generated data sources. Your response should be in valid JSON format. Do not include any comments or explanations in your response. Please ensure that the generated datasources adhere to the specifications of the JSON schema and include all necessary fields as described in the model description.`;
 
     //logic to call gpt-4 api and general visuals
-    let visuals: any = [];
+    let generatedVisuals: any = [];
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -28,9 +28,10 @@ const generateVisuals = async (generatedDataSources: any, userPrompt: any) => {
         // Get the generated visuals JSON object from GPT-4 response
         const gptResponse = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
         if (gptResponse) {
+            console.log('Response: ', gptResponse)
             try {
                 // Parse GPT-4 generated JSON string into a JSON object
-                visuals = JSON.parse(gptResponse);
+                generatedVisuals = JSON.parse(gptResponse);
             } catch (error) {
                 console.error("Error parsing GPT-4 generated JSON:", error);
             }
@@ -40,7 +41,7 @@ const generateVisuals = async (generatedDataSources: any, userPrompt: any) => {
     }
 
     // Return visuals object
-    return visuals;
+    return generatedVisuals;
 }
 
 export default generateVisuals;
