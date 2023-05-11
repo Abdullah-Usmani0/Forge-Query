@@ -10,25 +10,28 @@ const generateKPIs = inngest.createFunction(
   { name: "Generate KPIs" },
   { event: "ai/generate.kpis" },
   async ({ event, step }) => {
-    //get the user prompt from the event
+    //get the user data from the event
     const userPrompt: string = event.data.userPrompt;
-    //get the generatedDataSources from GPT-4 
+    // const userId: string = event.user.user_id;
+    // const userEmail: string = event.user.email;
+
+    //get the generatedDataSources from  
     const generatedDataSources = await step.run("Get Generated Datasources", async () => {
       return await getDataSources(userPrompt);
     });
-    //get the generatedVisuals from GPT-4
+    //get the generatedVisuals from 
     const generatedVisuals = await step.run("Get Generated Visuals", async () => {
-      return await getVisuals(generatedDataSources,userPrompt);
+      return await getVisuals(generatedDataSources, userPrompt);
     }
     );
-    //get the generatedDashboard from GPT-4
+    //get the generatedDashboard from 
     const generatedDashboards = await step.run("Get Generated Dashboard", async () => {
-      return await getDashboard(generatedVisuals,userPrompt);
+      return await getDashboard(generatedVisuals, userPrompt);
     }
     );
     //get the finalJSON
     const finalObject = await step.run("Get Final JSON", async () => {
-      return await getFinal(generatedDataSources,generatedVisuals,generatedDashboards);
+      return await getFinal(generatedDataSources, generatedVisuals, generatedDashboards);
     }
     );
     return finalObject;
