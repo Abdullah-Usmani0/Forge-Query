@@ -1,0 +1,27 @@
+CREATE TABLE Properties (
+    PropertyID INT AUTO_INCREMENT,
+    Address VARCHAR(255) NOT NULL,
+    PropertyType VARCHAR(255) NOT NULL,
+    Price DECIMAL(10,2),
+    PRIMARY KEY (PropertyID)
+);
+
+CREATE TABLE Sales (
+    SaleID INT AUTO_INCREMENT,
+    PropertyID INT,  -- This field is still here, but it's no longer a foreign key.
+    SaleDate DATE,
+    SalePrice DECIMAL(10,2),
+    PRIMARY KEY (SaleID)
+);
+
+INSERT INTO Properties (Address, PropertyType, Price)
+VALUES 
+    ('123 Main St', 'House', 300000.00),
+    ('456 Pine St', 'Apartment', 200000.00),
+    ('789 Oak St', 'Condo', 150000.00);
+
+INSERT INTO Sales (PropertyID, SaleDate, SalePrice)
+VALUES 
+    (1, '2023-06-01', 315000.00),
+    (2, '2023-06-02', 210000.00),
+    (3, '2023-06-03', 160000.00);
