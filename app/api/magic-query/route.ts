@@ -1,9 +1,7 @@
 import { inngest } from "@/app/inngest/client";
 import { NextResponse } from 'next/server';
 
-export const config = {
-  runtime: "edge",
-};
+export const runtime = "edge"
 
 // Create a simple async Next.js API route handler
 export async function POST(request: Request) {
