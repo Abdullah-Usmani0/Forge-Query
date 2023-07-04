@@ -46,7 +46,7 @@ export default function Chat() {
             <button
               key={index}
               type="button"
-              onClick={() => handleInputChange({ target: { value: input } })}
+              onClick={() => handleInputChange({ target: { value: input } } as any)}
               className="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white text-sm px-4 py-2 rounded-md text-center"
             >
               {input}
